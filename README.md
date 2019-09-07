@@ -1,34 +1,17 @@
-# Option 1: Docker Hub Usage
+The project is designed to run mutliple sonarqube instances, having only Java quality profile, so that each instance caters to one feature branch of a code repository. 
 
-Pull Docker image from Docker Hub
-```
-docker pull mbirkner/docker-sonarqube-qualityprofiles
-```
+After building the image, start up the container using the usual commands.
 
-Start Docker Container from image
-```
-docker run -d --name docker-sonarqube-profiles -p 9000:9000 -p 9002:9002 mbirkner/docker-sonarqube-qualityprofiles
-```
+Once up, run the sonar analysis on the project, with the ````sonar.host.url```` pointing to the docker container.
 
-# Option 2: Build Container yourself
+And once the analysis is complete, the following RESTs can be used to fetch the results:
 
-Clone Git Repository
-```
-git clone https://github.com/marcelbirkner/docker-sonarqube-qualityprofiles.git
-cd docker-sonarqube-qualityprofiles
-```
+Issues: 
+````
+http://<sonar-url>:9000/api/issues/search?projectKeys=<project-key>&severities=BLOCKER&statuses=OPEN&pageSize=400&authors=<author-name>
+````
 
-Build image
-```
-docker build -t docker-sonarqube-profiles .
-```
-
-Run container
-```
-docker run -d --name docker-sonarqube-profiles -v $PWD/qualityprofile:/qualityprofile -p 9000:9000 -p 9002:9002 docker-sonarqube-profiles
-```
-
-Get logs for container
-```
-docker logs -f docker-sonarqube-profiles
-```
+Coverage:
+````
+http://<sonar-url>:9000/api/measures/component?component=<project-key>&metricKeys=coverage
+````
